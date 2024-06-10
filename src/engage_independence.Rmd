@@ -1,0 +1,125 @@
+---
+title: "ENGAGE data independence testing"
+author: "Erich Seamon"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Solution vs. Stakeholder Engagement
+
+Chi Square and Fishers Exact Test on contingency table with Solution/No Solution as the explanatory, and engaged stakeholder/did not engage stakeholder as the response.
+
+Both chi square and fishers exact test were insignificant/borderline, with a chi square approximation of ~44, which is well above the critical value.  Fishers exact test returned an odds ratio of ~18. The alternative hypothesis: true odds ratio is not equal to 1.
+
+The FET defaults to associating the odds ratio with the first cell. In this instance "The odds of having a solution is 18.25 times that for an engaged stakeholder".  You could flip the response and explanatory, but the odds ratio would stay the same.
+
+
+```{r, echo=FALSE}
+
+solution_stakeholder <- 
+  as.matrix(
+    read.table(text=
+                 "  E     NE           
+      S             14    4      
+      NS            76    400",
+               header=TRUE,
+               row.names=1)
+  )
+
+names(dimnames(solution_stakeholder)) <- c('solution','stakeholder')
+solution_stakeholder
+
+solution_stakeholder <- as.table(solution_stakeholder)
+
+summary(solution_stakeholder)
+
+fisher.test(solution_stakeholder)
+
+
+```
+\newpage
+## Solution vs. Model 
+
+Chi Square and Fishers Exact Test on contingency table with Solution/No Solution as the explanatory, and Model/No Model as the response.
+
+Both chi square and fishers exact test were insignificant/borderline, with a chi square approximation of ~3.7, which is close to the critical value.  Fishers exact test returned an odds ratio of under 1. The alternative hypothesis: true odds ratio is not equal to 1
+
+The FET defaults to associating the odds ratio with the first cell. In this instance "The odds of having a solution is .39 times that for having a model".  You could flip the response and explanatory, but the odds ratio would stay the same.
+
+```{r, echo=FALSE}
+
+solution_model <- 
+  as.matrix(
+    read.table(text=
+                 "  M     NM      
+      S             11    7      
+      NS            377   94",
+               header=TRUE,
+               row.names=1)
+  )
+
+names(dimnames(solution_model)) <- c('solution','model')
+solution_model
+
+solution_model <- as.table(solution_model)
+
+summary(solution_model)
+
+fisher.test(solution_model)
+```
+
+
+\newpage
+## Solution vs. Engagement (reversed cells)
+
+```{r, echo=FALSE}
+
+nosolution_stakeholder <- 
+  as.matrix(
+    read.table(text=
+                  "  E    NE           
+      NS            76    400      
+      S             14    4",
+               header=TRUE,
+               row.names=1)
+  )
+
+names(dimnames(nosolution_stakeholder)) <- c('solution','stakeholder')
+nosolution_stakeholder
+
+nosolution_stakeholder <- as.table(nosolution_stakeholder)
+
+summary(nosolution_stakeholder)
+
+fisher.test(nosolution_stakeholder)
+```
+
+\newpage
+## Solution vs. Model (reversed cells)
+
+```{r, echo=FALSE}
+
+nomodel_solution <- 
+  as.matrix(
+    read.table(text=
+                  " M     NM      
+      NS            377   94      
+      S             11    7",
+               header=TRUE,
+               row.names=1)
+  )
+
+names(dimnames(nomodel_solution)) <- c('model','solution')
+nomodel_solution
+
+nomodel_solution <- as.table(nomodel_solution)
+
+summary(nomodel_solution)
+
+fisher.test(nomodel_solution)
+```
+
